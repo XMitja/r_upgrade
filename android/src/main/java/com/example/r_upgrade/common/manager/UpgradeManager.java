@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -108,7 +109,11 @@ public class UpgradeManager extends ContextWrapper {
         filter.addAction(UpgradeManager.DOWNLOAD_STATUS);
         filter.addAction(UpgradeManager.DOWNLOAD_INSTALL);
         downloadReceiver = createBroadcastReceiver();
-        registerReceiver(downloadReceiver, filter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(downloadReceiver, filter, Context.RECEIVER_EXPORTED);
+        }else{
+            registerReceiver(downloadReceiver, filter);
+        }
     }
 
 
@@ -393,8 +398,8 @@ public class UpgradeManager extends ContextWrapper {
                     queryTask(id);
                 } else if (intent != null && intent.getAction() != null && intent.getAction().equals(UpgradeManager.DOWNLOAD_STATUS)) {
 
-                    final long current_length = intent.getLongExtra(PARAMS_CURRENT_LENGTH, 0);
-                    final long max_length = intent.getLongExtra(PARAMS_MAX_LENGTH, 0);
+                    final int current_length = intent.getIntExtra(PARAMS_CURRENT_LENGTH, 0);
+                    final int max_length = intent.getIntExtra(PARAMS_MAX_LENGTH, 0);
 
                     double percent = intent.getDoubleExtra(PARAMS_PERCENT, 0);
 
