@@ -16,7 +16,6 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 /**
  * RUpgradePlugin
@@ -29,11 +28,6 @@ public class RUpgradePlugin implements FlutterPlugin, ActivityAware {
     private FlutterPluginBinding flutterPluginBinding;
 
     public RUpgradePlugin() {
-
-    }
-
-    private RUpgradePlugin(Activity activity, BinaryMessenger messenger, StoragePermissions.PermissionsRegistry permissionsRegistry) {
-        initPlugin(activity, messenger, permissionsRegistry);
     }
 
     private void initPlugin(Activity activity, BinaryMessenger messenger, StoragePermissions.PermissionsRegistry permissionsRegistry) {
@@ -42,24 +36,9 @@ public class RUpgradePlugin implements FlutterPlugin, ActivityAware {
         _channel.setMethodCallHandler(new RUpgradeMethodCallHandler(upgradeManager));
     }
 
-    /**
-     * Plugin registration.
-     */
-    public static void registerWith(final Registrar registrar) {
-
-        new RUpgradePlugin(registrar.activity(), registrar.messenger(), new StoragePermissions.PermissionsRegistry() {
-            @Override
-            public void addListener(PluginRegistry.RequestPermissionsResultListener handler) {
-                registrar.addRequestPermissionsResultListener(handler);
-            }
-        });
-    }
-
-
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
         this.flutterPluginBinding = binding;
-
     }
 
     @Override
@@ -67,7 +46,6 @@ public class RUpgradePlugin implements FlutterPlugin, ActivityAware {
         onDetachedFromActivity();
         flutterPluginBinding = null;
     }
-
 
     @Override
     public void onAttachedToActivity(@NonNull final ActivityPluginBinding binding) {
